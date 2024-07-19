@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:5000');
+        socket.on('greeting-from-server', function (message) {
+            document.body.appendChild(
+                document.createTextNode(message.greeting + " ")
+            );
+            socket.emit('greeting-from-client', {
+                greeting: 'Hello Server'
+            });
+        });
+        socket.on('syncPlaylist', function (data) {
+            document.body.appendChild(
+                document.createTextNode(data.id)
+            );
+            socket.emit('receivedPlaylist', {
+                greeting: 'Recieved'
+            });
+        })
+        const syncPlaylist = () => {
+            console.log('cleint sync');
+            socket.emit('sendSync', {
+                message: 'start'
+            })
+        }
+        socket.emit('sendSync', {
+            message: 'start'
+        })
+    </script>
+    <button onclick="syncPlaylist">Sync Playlist</button>
+</body>
+
+</html>
